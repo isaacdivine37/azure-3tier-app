@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-3tier-app
+  labels:
+    app: azure-3tier-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: azure-3tier-app
+  template:
+    metadata:
+      labels:
+        app: azure-3tier-app
+    spec:
+      containers:
+        - name: app
+          image: __ACR_NAME__.azurecr.io/azure-3tier-app:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3000"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: database-url
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secrets
+type: Opaque
+data:
+  # Base64 encoded connection string - will be populated by CI/CD
+  database-url: __DATABASE_URL_B64__
