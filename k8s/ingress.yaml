@@ -4,17 +4,12 @@ metadata:
   name: azure-3tier-app-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
-  tls:
-    - hosts:
-        - your-domain.com
-      secretName: azure-3tier-app-tls
   rules:
-    - host: your-domain.com
-      http:
+    - http:
         paths:
           - path: /
             pathType: Prefix

@@ -7,10 +7,9 @@ resource "azurerm_postgresql_flexible_server" "db" {
   delegated_subnet_id = var.db_subnet_id
   private_dns_zone_id = azurerm_private_dns_zone.postgres.id
 
-  administrator_login    = var.db_admin_login
-  administrator_password = var.db_admin_password
-
-  zone = "1"
+  administrator_login           = var.db_admin_login
+  administrator_password        = var.db_admin_password
+  public_network_access_enabled = false
 
   storage_mb = 32768
   sku_name   = "GP_Standard_D2s_v3"

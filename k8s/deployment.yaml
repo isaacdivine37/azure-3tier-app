@@ -14,9 +14,11 @@ spec:
       labels:
         app: azure-3tier-app
     spec:
+      imagePullSecrets:
+        - name: acr-secret
       containers:
         - name: app
-          image: __ACR_NAME__.azurecr.io/azure-3tier-app:latest
+          image: app3tieracrx4lq.azurecr.io/azure-3tier-app:latest
           ports:
             - containerPort: 3000
           env:
@@ -56,4 +58,4 @@ metadata:
 type: Opaque
 data:
   # Base64 encoded connection string - will be populated by CI/CD
-  database-url: __DATABASE_URL_B64__
+  database-url: cG9zdGdyZXNxbDovL3VzZXJuYW1lOnBhc3N3b3JkQGhvc3RuYW1lOjU0MzIvZGF0YWJhc2U=
